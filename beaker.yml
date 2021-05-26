@@ -20,8 +20,7 @@ tasks:
     result:
       path: /output
     resources:
-      # TODO: change back to 8
-      gpuCount: 2
+      gpuCount: 8
     context:
       cluster: ai2/on-prem-ai2-server
       priority: normal

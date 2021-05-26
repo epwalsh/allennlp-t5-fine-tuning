@@ -1,5 +1,6 @@
 // =================== Configurable Settings ======================
-local debug = true;
+local debug = false;
+local batch_size_per_gpu = 4;
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
@@ -45,10 +46,11 @@ local dataset_reader = {
         "beam_size": 3,
         "max_decoding_steps": if debug then 5 else 50,
     },
-    // TODO: configure
     "data_loader": {
-        "batch_size": 4,
+        "batch_size": batch_size_per_gpu,
         "shuffle": true,
+        "max_instances_in_memory": batch_size_per_gpu * 1024,
+        "num_workers": 1,
     },
     "vocabulary": {
         "type": "empty",
@@ -67,7 +69,6 @@ local dataset_reader = {
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        // [if !debug then "callbacks"]: [
         "callbacks": [
             {
                 "type": "wandb",

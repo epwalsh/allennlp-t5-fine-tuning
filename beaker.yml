@@ -3,22 +3,23 @@ description: Train T5 11B
 tasks:
   - name: train
     image:
-      docker: epwalsh/allennlp-beaker:aba274433bb6aa27716d4f9c7c22647fd52b5c5e-cuda101
+      docker: epwalsh/allennlp-t5:latest
     envVars:
-      - name: CONFIG
-        value: https://raw.githubusercontent.com/epwalsh/vilbert_vqa/97b56a37344a3344d70473c96b414fcac7598ab7/text_side_frozen.jsonnet
-      - name: OVERRIDES
-        value: '{"random_seed":4,"numpy_seed":4,"pytorch_seed":4}'
+      # Hack to get more shared memory (needed for multiprocess data loading)
       - name: BEAKER_FEATURE_SHARED_MEMORY_OVERRIDE
         value: "true"
     datasets:
       - mountPath: /data/t5-11b-weights
         source:
           beaker: ds_rcnp05h59beo
+      # - mountPath: /data/CNN-DM
+      #   source:
+      #     beaker: ds_2kde4g0vee2e
     result:
       path: /output
     resources:
-      gpuCount: 8
+      # TODO: change back to 8
+      gpuCount: 2
     context:
       cluster: ai2/on-prem-ai2-server
       priority: normal

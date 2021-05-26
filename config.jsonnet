@@ -5,9 +5,13 @@ local debug = true;
 // ---------------- !! Don't edit below here !! -------------------
 
 local model_name = if debug then "t5-small" else "t5-11b";
-local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
-local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
-local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
+
+local remote_data_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz!cnndm-combined-data-2020.07.13/url_lists/";
+// TODO: use beaker dataset if upload ever works.
+// local data_base_url = if debug then remote_data_url else "/data/CNN-DM/url_lists/";
+local data_base_url = remote_data_url;
+local train_data = data_base_url + "all_train.txt";
+local dev_data = data_base_url + "all_val.txt";
 
 local dataset_reader = {
     "type": "cnn_dm",
@@ -66,18 +70,17 @@ local dataset_reader = {
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        // TODO: uncomment once wandb fix is merged.
-        // [if !debug then "callbacks"]: [
-        //     {
-        //         "type": "wandb",
-        //         "project": "allennlp-t5",
-        //         "entity": "allenai-team1",
-        //         "watch_model": false,
-        //         "summary_interval": 1,
-        //         "should_log_parameter_statistics": false,
-        //         "should_log_learning_rate": false,
-        //     },
-        // ],
+        [if !debug then "callbacks"]: [
+            {
+                "type": "wandb",
+                "project": "allennlp-t5",
+                "entity": "allenai-team1",
+                "watch_model": false,
+                "summary_interval": 1,
+                "should_log_parameter_statistics": false,
+                "should_log_learning_rate": false,
+            },
+        ],
     },
     "distributed": {
         "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],

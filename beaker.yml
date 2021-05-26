@@ -9,7 +9,7 @@ tasks:
       - name: BEAKER_FEATURE_SHARED_MEMORY_OVERRIDE
         value: "true"
       - name: WANDB_API_KEY
-        value: WANDB_API_KEY
+        secret: WANDB_API_KEY
     datasets:
       - mountPath: /data/t5-11b-weights
         source:

@@ -1,5 +1,5 @@
 version: v2-alpha
-description:
+description: Train T5 11B
 tasks:
   - name: train
     image:
@@ -12,13 +12,13 @@ tasks:
       - name: BEAKER_FEATURE_SHARED_MEMORY_OVERRIDE
         value: "true"
     datasets:
-      - mountPath: /data/vqa
+      - mountPath: /data/t5-11b-weights
         source:
-          beaker: ds_zbkh08o8ujxu
+          beaker: ds_rcnp05h59beo
     result:
       path: /output
     resources:
-      gpuCount: 1
+      gpuCount: 8
     context:
       cluster: ai2/on-prem-ai2-server
       priority: normal

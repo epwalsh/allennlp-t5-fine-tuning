@@ -1,10 +1,10 @@
 // =================== Configurable Settings ======================
-local model_name = "t5-small";
 local debug = true;
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
 
+local model_name = if debug then "t5-small" else "t5-11b";
 local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
 local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
@@ -39,6 +39,8 @@ local dataset_reader = {
     "model": {
         "type": "t5",
         "model_name": model_name,
+        // We get the big weights from a beaker dataset.
+        [if !debug then "weights_path"]: "/data/t5-11b-weights/t5-11b.bin",
         "beam_size": 3,
         "max_decoding_steps": if debug then 5 else 50,
     },
@@ -64,20 +66,21 @@ local dataset_reader = {
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        [if !debug then "callbacks"]: [
-            {
-                "type": "wandb",
-                "project": "allennlp-t5",
-                "entity": "allenai-team1",
-                "watch_model": false,
-                "summary_interval": 1,
-                "should_log_parameter_statistics": false,
-                "should_log_learning_rate": false,
-            },
-        ],
+        // TODO: uncomment once wandb fix is merged.
+        // [if !debug then "callbacks"]: [
+        //     {
+        //         "type": "wandb",
+        //         "project": "allennlp-t5",
+        //         "entity": "allenai-team1",
+        //         "watch_model": false,
+        //         "summary_interval": 1,
+        //         "should_log_parameter_statistics": false,
+        //         "should_log_learning_rate": false,
+        //     },
+        // ],
     },
     "distributed": {
-        "cuda_devices": [0, 1],
+        "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
         },

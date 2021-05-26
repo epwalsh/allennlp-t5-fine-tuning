@@ -6,12 +6,9 @@ local debug = true;
 
 local model_name = if debug then "t5-small" else "t5-11b";
 
-local remote_data_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz!cnndm-combined-data-2020.07.13/url_lists/";
-// TODO: use beaker dataset if upload ever works.
-// local data_base_url = if debug then remote_data_url else "/data/CNN-DM/url_lists/";
-local data_base_url = remote_data_url;
-local train_data = data_base_url + "all_train.txt";
-local dev_data = data_base_url + "all_val.txt";
+local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
+local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
+local dev_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_val.txt";
 
 local dataset_reader = {
     "type": "cnn_dm",

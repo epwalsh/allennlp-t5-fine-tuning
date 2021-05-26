@@ -17,6 +17,10 @@ train :
 docker-build :
 	docker build -f Dockerfile -t $(DOCKER_IMAGE_NAME) .
 
+.PHONY : docker-push
+docker-push :
+	docker push $(DOCKER_IMAGE_NAME)
+
 .PHONY : docker-train
 docker-train :
 	docker run $(DOCKER_GPUS) $(DOCKER_IMAGE_NAME)

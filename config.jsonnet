@@ -67,7 +67,8 @@ local dataset_reader = {
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        [if !debug then "callbacks"]: [
+        // [if !debug then "callbacks"]: [
+        "callbacks": [
             {
                 "type": "wandb",
                 "project": "allennlp-t5",

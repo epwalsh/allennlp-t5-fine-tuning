@@ -1,6 +1,7 @@
 // =================== Configurable Settings ======================
 local debug = false;
 local batch_size_per_gpu = 4;
+local on_beaker = false;
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
@@ -42,7 +43,7 @@ local dataset_reader = {
         "type": "t5",
         "model_name": model_name,
         // We get the big weights from a beaker dataset.
-        [if !debug then "weights_path"]: "/data/t5-11b-weights/t5-11b.bin",
+        [if on_beaker then "weights_path"]: "/data/t5-11b-weights/t5-11b.bin",
         "beam_size": 3,
         "max_decoding_steps": if debug then 5 else 50,
     },

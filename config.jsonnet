@@ -1,12 +1,12 @@
 // =================== Configurable Settings ======================
 local debug = false;
-local batch_size_per_gpu = 4;
+local batch_size_per_gpu = 2;
 local on_beaker = false;
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
 
-local model_name = if debug then "t5-small" else "t5-11b";
+local model_name = if debug then "t5-small" else "t5-3b";
 
 local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
@@ -50,8 +50,9 @@ local dataset_reader = {
     "data_loader": {
         "batch_size": batch_size_per_gpu,
         "shuffle": true,
-        "max_instances_in_memory": batch_size_per_gpu * 1024,
+        "max_instances_in_memory": batch_size_per_gpu * 128,
         "num_workers": 1,
+        "batches_per_epoch": 512,
     },
     "vocabulary": {
         "type": "empty",

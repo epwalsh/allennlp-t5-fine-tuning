@@ -91,6 +91,9 @@ local data_loader = {
         "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
+            "auto_wrap_policy_kwargs": {
+                "min_num_params": 1e5,
+            },
         },
     },
 }

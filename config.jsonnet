@@ -92,7 +92,7 @@ local data_loader = {
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
             "auto_wrap_policy_kwargs": {
-                "min_num_params": 1e5,
+                "min_num_params": 1e4,
             },
         },
     },

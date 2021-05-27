@@ -1,6 +1,7 @@
 // =================== Configurable Settings ======================
 local debug = false;
 local batch_size_per_gpu = 1;
+local use_amp = true;
 local on_beaker = false;
 // ================================================================
 
@@ -63,6 +64,7 @@ local data_loader = {
     },
     "trainer": {
         "checkpointer": null,
+        "use_amp": use_amp,
         "num_epochs": 3,
         "optimizer": {
             "type": "huggingface_adamw",
@@ -91,6 +93,7 @@ local data_loader = {
         "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
+            "mixed_precision": use_amp,
             "auto_wrap_policy_kwargs": {
                 "min_num_params": 1e4,
             },

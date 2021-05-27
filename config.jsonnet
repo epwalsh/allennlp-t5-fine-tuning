@@ -30,6 +30,11 @@ local dataset_reader = {
     "source_prefix": "summarize: ",
 };
 
+local data_loader = {
+    "batch_size": batch_size_per_gpu,
+    "shuffle": true,
+};
+
 {
     "train_data_path": train_data,
     "validation_data_path": dev_data,
@@ -37,7 +42,7 @@ local dataset_reader = {
         [if debug then "max_instances"]: 64,
     },
     "validation_dataset_reader": dataset_reader + {
-        [if debug then "max_instances"]: 32,
+        "max_instances": batch_size_per_gpu * 10,
     },
     "model": {
         "type": "t5",
@@ -47,13 +52,12 @@ local dataset_reader = {
         "beam_size": 3,
         "max_decoding_steps": if debug then 5 else 50,
     },
-    "data_loader": {
-        "batch_size": batch_size_per_gpu,
-        "shuffle": true,
+    "data_loader": data_loader + {
         "max_instances_in_memory": batch_size_per_gpu * 128,
         "num_workers": 1,
         "batches_per_epoch": 512,
     },
+    "validation_data_loader": data_loader,
     "vocabulary": {
         "type": "empty",
     },

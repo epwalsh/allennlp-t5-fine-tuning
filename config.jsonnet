@@ -40,7 +40,7 @@ local data_loader = {
     "train_data_path": train_data,
     "validation_data_path": dev_data,
     "dataset_reader": dataset_reader + {
-        [if debug then "max_instances"]: 64,
+        [if debug then "max_instances"]: batch_size_per_gpu * 10,
     },
     "validation_dataset_reader": dataset_reader + {
         "max_instances": batch_size_per_gpu * 10,

@@ -65,6 +65,7 @@ local data_loader = {
     "trainer": {
         "checkpointer": null,
         "use_amp": use_amp,
+        [if use_amp then "grad_scaling"]: false,  # TODO: use grad scaling once it's fixed.
         "num_epochs": 3,
         "optimizer": {
             "type": "huggingface_adamw",

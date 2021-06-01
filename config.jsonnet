@@ -1,7 +1,7 @@
 // =================== Configurable Settings ======================
 local debug = false;
 local batch_size_per_gpu = 1;
-local use_amp = true;
+local use_amp = false;
 local on_beaker = false;
 // ================================================================
 

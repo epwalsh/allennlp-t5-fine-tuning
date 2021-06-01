@@ -3,6 +3,8 @@ local debug = false;
 local batch_size_per_gpu = 1;
 local use_amp = false;
 local on_beaker = false;
+local source_length = 32;  // TODO: change this back to 512
+local target_length = 8;   // TODO: change this back to 54
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
@@ -26,8 +28,8 @@ local dataset_reader = {
             "namespace": "tokens",
         }
     },
-    "source_max_tokens": 512,
-    "target_max_tokens": 54,
+    "source_max_tokens": source_length,
+    "target_max_tokens": target_length,
     "source_prefix": "summarize: ",
 };
 

@@ -56,7 +56,7 @@ local data_loader = {
     "data_loader": data_loader + {
         "max_instances_in_memory": batch_size_per_gpu * 128,
         "num_workers": 1,
-        "batches_per_epoch": 512,
+        [if !debug then "batches_per_epoch"]: 512,
     },
     "validation_data_loader": data_loader,
     "vocabulary": {

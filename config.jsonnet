@@ -1,6 +1,5 @@
 // =================== Configurable Settings ======================
-local debug = false;
-local batch_size_per_gpu = 1;
+local debug = true;
 local use_amp = false;
 local on_beaker = false;
 local source_length = 32;  // TODO: change this back to 512
@@ -10,6 +9,7 @@ local target_length = 8;   // TODO: change this back to 54
 // ---------------- !! Don't edit below here !! -------------------
 
 local model_name = if debug then "t5-small" else "t5-11b";
+local batch_size_per_gpu = if debug then 4 else 1;
 
 local data_base_url = "https://storage.googleapis.com/allennlp-public-data/cnndm-combined-data-2020.07.13.tar.gz";
 local train_data = data_base_url + "!cnndm-combined-data-2020.07.13/url_lists/all_train.txt";
@@ -38,6 +38,16 @@ local data_loader = {
     "shuffle": true,
 };
 
+local wandb_callback = {
+    "type": "wandb",
+    "project": "allennlp-t5",
+    "entity": "allenai-team1",
+    "watch_model": false,
+    "summary_interval": 1,
+    "should_log_parameter_statistics": false,
+    "should_log_learning_rate": false,
+};
+
 {
     "train_data_path": train_data,
     "validation_data_path": dev_data,
@@ -45,7 +55,7 @@ local data_loader = {
         [if debug then "max_instances"]: batch_size_per_gpu * 10,
     },
     "validation_dataset_reader": dataset_reader + {
-        "max_instances": batch_size_per_gpu * 10,
+        "max_instances": if debug then batch_size_per_gpu * 4 else batch_size_per_gpu * 10,
     },
     "model": {
         "type": "t5",
@@ -58,8 +68,8 @@ local data_loader = {
         },
     },
     "data_loader": data_loader + {
-        "max_instances_in_memory": batch_size_per_gpu * 128,
-        "num_workers": 1,
+        [if !debug then "max_instances_in_memory"]: batch_size_per_gpu * 128,
+        [if !debug then "num_workers"]: 1,
         [if !debug then "batches_per_epoch"]: 512,
     },
     "validation_data_loader": data_loader,
@@ -82,17 +92,7 @@ local data_loader = {
             "type": "polynomial_decay",
         },
         "grad_norm": 1.0,
-        "callbacks": [
-            {
-                "type": "wandb",
-                "project": "allennlp-t5",
-                "entity": "allenai-team1",
-                "watch_model": false,
-                "summary_interval": 1,
-                "should_log_parameter_statistics": false,
-                "should_log_learning_rate": false,
-            },
-        ],
+        [if !debug then "callbacks"]: [wandb_callback],
     },
     "distributed": {
         "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],

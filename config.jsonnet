@@ -1,9 +1,13 @@
 // =================== Configurable Settings ======================
 local debug = true;
+local activation_checkpointing = true;
+local validate = true;
 local use_amp = false;
 local on_beaker = false;
-local source_length = 32;  // TODO: change this back to 512
-local target_length = 8;   // TODO: change this back to 54
+// local source_length = 32;  // TODO: change this back to 512
+// local target_length = 8;   // TODO: change this back to 54
+local source_length = 512;
+local target_length = 54;
 // ================================================================
 
 // ---------------- !! Don't edit below here !! -------------------
@@ -50,9 +54,9 @@ local wandb_callback = {
 
 {
     "train_data_path": train_data,
-    "validation_data_path": dev_data,
+    [if validate then "validation_data_path"]: dev_data,
     "dataset_reader": dataset_reader + {
-        [if debug then "max_instances"]: batch_size_per_gpu * 10,
+        [if debug then "max_instances"]: batch_size_per_gpu * 40,
     },
     "validation_dataset_reader": dataset_reader + {
         "max_instances": if debug then batch_size_per_gpu * 4 else batch_size_per_gpu * 10,
@@ -65,6 +69,11 @@ local wandb_callback = {
         "beam_search": {
             "beam_size": 3,
             "max_steps": if debug then 5 else 50,
+        },
+        [if activation_checkpointing then "checkpoint_wrapper"]: {
+            "type": "fairscale",
+            "offload_to_cpu": true,
+            "maintain_forward_counter": true,
         },
     },
     "data_loader": data_loader + {
@@ -99,9 +108,10 @@ local wandb_callback = {
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
             "mixed_precision": use_amp,
-            "auto_wrap_policy_kwargs": {
-                "min_num_params": 1e4,
-            },
+            "do_auto_wrap": false,
+            // "auto_wrap_policy_kwargs": {
+            //     "min_num_params": 1e4,
+            // },
         },
     },
 }

@@ -108,10 +108,6 @@ local wandb_callback = {
         "ddp_wrapper": {
             "type": "fairscale_fsdp",
             "mixed_precision": use_amp,
-            "do_auto_wrap": false,
-            // "auto_wrap_policy_kwargs": {
-            //     "min_num_params": 1e4,
-            // },
         },
     },
 }

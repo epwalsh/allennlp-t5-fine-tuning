@@ -91,14 +91,7 @@ local wandb_callback = {
         [if use_amp then "grad_scaling"]: false,  # TODO: use grad scaling once it's fixed.
         "num_epochs": 3,
         "optimizer": {
-            "type": "huggingface_adamw",
-            "lr": 3e-5,
-            "betas": [0.9, 0.999],
-            "eps": 1e-8,
-            "correct_bias": true,
-        },
-        "learning_rate_scheduler": {
-            "type": "polynomial_decay",
+            "type": "huggingface_adafactor",
         },
         "grad_norm": 1.0,
         [if !debug then "callbacks"]: [wandb_callback],

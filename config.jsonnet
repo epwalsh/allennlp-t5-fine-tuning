@@ -86,7 +86,7 @@ local wandb_callback = {
         "type": "empty",
     },
     "trainer": {
-        "checkpointer": null,
+        // "checkpointer": null,
         "use_amp": use_amp,
         [if use_amp then "grad_scaling"]: false,  # TODO: use grad scaling once it's fixed.
         "num_epochs": 3,

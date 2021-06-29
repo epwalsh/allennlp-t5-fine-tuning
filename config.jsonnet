@@ -1,16 +1,29 @@
 // =================== Configurable Settings ======================
+
+// In 'debug' mode, we only train t5-small over a few instances on 2 GPUs.
+// Otherwise we train t5-11b on 8 GPUs (less than 8 GPUs won't work).
 local debug = true;
+
+// This is probably necessary for t5-11b unless you have more than 8 GPUs.
 local activation_checkpointing = true;
+
+// Set to `false` if you want to skip validation.
 local validate = true;
+
+// AMP is currently unusably slow with t5-11b, which be due to a bug bug within FairScale,
+// but I'm not sure yet.
 local use_amp = false;
-local on_beaker = false;
-// local source_length = 32;  // TODO: change this back to 512
-// local target_length = 8;   // TODO: change this back to 54
+
+// These are reasonable defaults.
 local source_length = 512;
 local target_length = 54;
+
+// Only set to `true` if you're running this on Beaker batch.
+local on_beaker = false;
+
 // ================================================================
 
-// ---------------- !! Don't edit below here !! -------------------
+// ------ !! You probably don't need to edit below here !! --------
 
 local model_name = if debug then "t5-small" else "t5-11b";
 local batch_size_per_gpu = if debug then 4 else 1;
@@ -86,9 +99,8 @@ local wandb_callback = {
         "type": "empty",
     },
     "trainer": {
-        // "checkpointer": null,
         "use_amp": use_amp,
-        [if use_amp then "grad_scaling"]: false,  # TODO: use grad scaling once it's fixed.
+        [if use_amp then "grad_scaling"]: false,  # TODO: use grad scaling once it's fixed in FairScale.
         "num_epochs": 3,
         "optimizer": {
             "type": "huggingface_adafactor",

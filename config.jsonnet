@@ -2,7 +2,7 @@
 
 // In 'debug' mode, we only train t5-small over a few instances on 2 GPUs.
 // Otherwise we train t5-11b on 8 GPUs (less than 8 GPUs won't work).
-local debug = true;
+local debug = false;
 
 // This is probably necessary for t5-11b unless you have more than 8 GPUs.
 local activation_checkpointing = true;
@@ -92,7 +92,6 @@ local wandb_callback = {
     "data_loader": data_loader + {
         [if !debug then "max_instances_in_memory"]: batch_size_per_gpu * 128,
         [if !debug then "num_workers"]: 1,
-        [if !debug then "batches_per_epoch"]: 512,
     },
     "validation_data_loader": data_loader,
     "vocabulary": {

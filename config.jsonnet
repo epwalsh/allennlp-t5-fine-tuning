@@ -2,7 +2,7 @@
 
 // In 'debug' mode, we only train t5-small over a few instances on 2 GPUs.
 // Otherwise we train t5-11b on 8 GPUs (less than 8 GPUs won't work).
-local debug = false;
+local debug = true;
 
 // This is probably necessary for t5-11b unless you have more than 8 GPUs.
 local activation_checkpointing = true;
@@ -109,7 +109,7 @@ local wandb_callback = {
     },
     "distributed": {
         "cuda_devices": if debug then [0, 1] else [0, 1, 2, 3, 4, 5, 6, 7],
-        "ddp_wrapper": {
+        "ddp_accelerator": {
             "type": "fairscale_fsdp",
             "mixed_precision": use_amp,
         },
